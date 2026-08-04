@@ -1,0 +1,8 @@
+{
+  "name": "Baldgirl | Official Site",
+  "description": "Official website for Baldgirl featuring music, tour dates, videos, merch store, and contact information.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
