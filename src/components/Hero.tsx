@@ -5,6 +5,7 @@ interface HeroProps {
   config: ArtistConfig;
   onSelectTab: (tab: TabType) => void;
   onPlayTrack?: (title: string, artist: string) => void;
+  onUpdateConfig?: (config: ArtistConfig) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ config }) => {
@@ -12,19 +13,55 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
 
   useEffect(() => {
     const videoEl = videoRef.current;
-    if (videoEl) {
-      videoEl.defaultMuted = true;
-      videoEl.muted = true;
-      videoEl.play().catch((err) => {
-        console.warn("Video autoplay notice:", err);
-      });
-    }
+    if (!videoEl) return;
+
+    // Force DOM attributes for browser autoplay policy compliance
+    videoEl.muted = true;
+    videoEl.defaultMuted = true;
+    videoEl.setAttribute('muted', '');
+    videoEl.setAttribute('playsinline', '');
+
+    const tryPlay = () => {
+      if (videoEl && videoEl.paused) {
+        const promise = videoEl.play();
+        if (promise !== undefined) {
+          promise.catch((err) => {
+            console.warn("Hero video autoplay notice (browser policy):", err);
+          });
+        }
+      }
+    };
+
+    // Initial play attempt
+    tryPlay();
+
+    // Event handlers for media loading milestones
+    videoEl.addEventListener('loadedmetadata', tryPlay);
+    videoEl.addEventListener('loadeddata', tryPlay);
+    videoEl.addEventListener('canplay', tryPlay);
+
+    // Fallback: If autoplay was delayed by browser interaction requirement
+    const handleUserInteraction = () => {
+      tryPlay();
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+    };
+    window.addEventListener('click', handleUserInteraction, { once: true });
+    window.addEventListener('touchstart', handleUserInteraction, { once: true });
+
+    return () => {
+      videoEl.removeEventListener('loadedmetadata', tryPlay);
+      videoEl.removeEventListener('loadeddata', tryPlay);
+      videoEl.removeEventListener('canplay', tryPlay);
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+    };
   }, [config.heroVideoUrl]);
 
   return (
-    <section className="relative w-full h-[52vh] min-h-[380px] sm:h-[85vh] lg:h-[92vh] overflow-hidden bg-black flex items-center justify-center border-b border-white/10">
+    <section className="relative w-full h-[50vh] min-h-[320px] sm:h-[85vh] lg:h-[92vh] overflow-hidden bg-black flex items-center justify-center border-b border-white/10">
       {/* Video Loop Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-center">
         {config.heroVideoUrl ? (
           <video
             key={config.heroVideoUrl}
@@ -34,9 +71,15 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
             loop
             muted
             playsInline
-            preload="auto"
             disablePictureInPicture
-            className="w-full h-full object-cover object-center opacity-90 transition-opacity duration-500"
+            onCanPlay={() => {
+              if (videoRef.current && videoRef.current.paused) {
+                videoRef.current.play().catch((err) => {
+                  console.warn("onCanPlay hero video autoplay notice:", err);
+                });
+              }
+            }}
+            className="w-full h-full object-cover object-center opacity-90 transition-opacity duration-500 pointer-events-none"
             poster={config.heroImage}
           />
         ) : (
@@ -59,4 +102,3 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
     </section>
   );
 };
-

@@ -84,9 +84,6 @@ export const RecentVideoSection: React.FC<RecentVideoSectionProps> = ({ config }
                       <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-current ml-1" />
                     </div>
                   </div>
-                  <div className="absolute top-3 left-3 px-3 py-1 bg-black/90 border border-white/30 text-[10px] font-bold uppercase tracking-widest text-white">
-                    {latestVideo.type}
-                  </div>
                   <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/90 border border-white/30 text-[10px] font-bold uppercase tracking-widest text-zinc-300 font-mono">
                     {latestVideo.duration}
                   </div>

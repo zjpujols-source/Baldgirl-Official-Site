@@ -18,7 +18,7 @@ export const ContactTab: React.FC<ContactTabProps> = ({ config }) => {
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-zinc-500 block">
             / CONTACT
           </span>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white font-sans leading-snug">
+          <h2 className="text-xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white font-sans leading-snug max-w-xl mx-auto">
             FOR INQUIRIES AND BOOKING REQUESTS, CONTACT BELOW.
           </h2>
         </div>

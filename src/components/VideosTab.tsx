@@ -97,9 +97,6 @@ export const VideosTab: React.FC<VideosTabProps> = ({ config }) => {
                       <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-current ml-1" />
                     </div>
                   </div>
-                  <div className="absolute top-3 left-3 px-3 py-1 bg-black/90 border border-white/30 text-[10px] font-bold uppercase tracking-widest text-white">
-                    {activeVideo.type}
-                  </div>
                   <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/90 border border-white/30 text-[10px] font-bold uppercase tracking-widest text-zinc-300 font-mono">
                     {activeVideo.duration}
                   </div>
@@ -107,31 +104,41 @@ export const VideosTab: React.FC<VideosTabProps> = ({ config }) => {
               )}
             </div>
 
-            {/* Bottom Row of Other Thumbnails */}
+            {/* Bottom Row of Other Thumbnails (4 videos: 2x2 on mobile, 1x4 on desktop) */}
             {otherVideos.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
-                {otherVideos.slice(0, 3).map((video) => {
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                {otherVideos.map((video) => {
                   const actualIdx = allVideos.findIndex(v => v.id === video.id);
-                  const thumb = video.thumbnail || `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`;
+                  const thumb = video.thumbnail || `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`;
                   return (
                     <div
                       key={video.id}
                       onClick={() => handleSelectVideo(actualIdx)}
-                      className="group relative aspect-video bg-zinc-900 border border-white/10 hover:border-white/60 cursor-pointer overflow-hidden transition-all shadow-lg"
+                      className="group relative flex flex-col bg-zinc-900 border border-white/10 hover:border-white/60 cursor-pointer overflow-hidden transition-all shadow-lg rounded-lg sm:rounded-none"
                       title={video.title}
                     >
-                      <img
-                        src={thumb}
-                        alt={video.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-60 group-hover:opacity-100"
-                      />
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-black/70 text-white border border-white/30 flex items-center justify-center transition-transform group-hover:scale-110">
-                          <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                      {/* Thumbnail Container */}
+                      <div className="relative w-full aspect-video bg-zinc-900 overflow-hidden">
+                        <img
+                          src={thumb}
+                          alt={video.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-black/80 text-white border border-white/30 flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg">
+                            <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                          </div>
                         </div>
                       </div>
-                      <div className="absolute bottom-1.5 left-1.5 right-1.5 truncate text-[9px] font-bold uppercase tracking-widest text-white bg-black/80 px-1.5 py-0.5">
-                        {video.title}
+
+                      {/* Info Below Thumbnail */}
+                      <div className="p-2 sm:p-2.5 flex flex-col justify-between flex-1 bg-zinc-950">
+                        <h4 className="text-[11px] sm:text-xs font-bold uppercase text-white truncate group-hover:text-purple-300 transition-colors leading-snug">
+                          {video.title}
+                        </h4>
+                        <span className="text-[9px] text-zinc-400 font-mono block mt-1">
+                          {video.duration}
+                        </span>
                       </div>
                     </div>
                   );

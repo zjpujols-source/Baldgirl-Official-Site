@@ -35,20 +35,20 @@ export const MusicTab: React.FC<MusicTabProps> = ({
   };
 
   return (
-    <div className="py-8 sm:py-16 animate-in fade-in duration-500 bg-black text-white min-h-[70vh] flex items-center">
+    <div className="py-4 sm:py-12 animate-in fade-in duration-500 bg-black text-white min-h-[60vh] flex items-center">
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           
           {/* Left Thumbnail Column */}
-          <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 lg:col-span-2">
+          <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 lg:col-span-2">
             {allReleases.map((release, idx) => {
               const isSelected = idx === selectedIndex;
               return (
                 <button
                   key={release.id}
                   onClick={() => setSelectedIndex(idx)}
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-none overflow-hidden transition-all duration-300 ${
+                  className={`relative w-14 h-14 sm:w-20 sm:h-20 shrink-0 rounded-none overflow-hidden transition-all duration-300 ${
                     isSelected 
                       ? 'border-2 border-white scale-105 opacity-100 shadow-2xl' 
                       : 'border border-white/10 opacity-40 hover:opacity-80'
@@ -69,7 +69,7 @@ export const MusicTab: React.FC<MusicTabProps> = ({
           <div className="lg:col-span-5 flex justify-center">
             <div 
               onClick={handleOpenStreamModal}
-              className="relative aspect-square w-full max-w-[420px] sm:max-w-[480px] bg-zinc-900 border border-white/20 shadow-2xl cursor-pointer group overflow-hidden"
+              className="relative aspect-square w-full max-w-[320px] sm:max-w-[440px] bg-zinc-900 border border-white/20 shadow-2xl cursor-pointer group overflow-hidden"
               title={`Stream / Download ${activeItem.title}`}
             >
               <img
@@ -86,46 +86,49 @@ export const MusicTab: React.FC<MusicTabProps> = ({
           </div>
 
           {/* Right Text Column: Title, Link & Circular Navigation */}
-          <div className="lg:col-span-5 flex flex-col justify-center space-y-8 text-left lg:pl-4">
+          <div className="lg:col-span-5 flex flex-col space-y-4 sm:space-y-6 lg:justify-between lg:min-h-[360px] text-left lg:pl-4 py-1">
             
-            <div className="space-y-3">
+            <div className="space-y-1.5 sm:space-y-3">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-zinc-400 block">
                 / MUSIC
               </span>
-              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white font-sans leading-none">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-white font-sans leading-tight whitespace-normal break-words">
                 {activeItem.title}
               </h2>
             </div>
 
-            {/* Stream / Download Button (opens platform picker modal) */}
-            <div className="pt-2">
-              <button
-                onClick={handleOpenStreamModal}
-                className="group inline-flex items-center gap-3 text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-white hover:text-zinc-300 transition-colors"
-              >
-                <span>Stream / Download</span>
-                <span className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center transition-transform group-hover:translate-x-1 shadow-lg shrink-0">
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </button>
-            </div>
+            {/* Stream / Download Button & Circular Navigation */}
+            <div className="space-y-4 sm:space-y-6 pt-1 sm:pt-4">
+              {/* Stream / Download Button (opens platform picker modal) */}
+              <div>
+                <button
+                  onClick={handleOpenStreamModal}
+                  className="group inline-flex items-center gap-3 text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-white hover:text-zinc-300 transition-colors"
+                >
+                  <span>Stream / Download</span>
+                  <span className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center transition-transform group-hover:translate-x-1 shadow-lg shrink-0">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                </button>
+              </div>
 
-            {/* Circular Arrow Navigation Buttons */}
-            <div className="pt-8 flex items-center gap-4">
-              <button
-                onClick={handlePrev}
-                aria-label="Previous track"
-                className="w-12 h-12 rounded-full bg-black border border-white/40 hover:border-white text-white hover:bg-white hover:text-black transition-all flex items-center justify-center shadow-lg active:scale-95"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleNext}
-                aria-label="Next track"
-                className="w-12 h-12 rounded-full bg-black border border-white/40 hover:border-white text-white hover:bg-white hover:text-black transition-all flex items-center justify-center shadow-lg active:scale-95"
-              >
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              {/* Circular Arrow Navigation Buttons */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handlePrev}
+                  aria-label="Previous track"
+                  className="w-12 h-12 rounded-full bg-black border border-white/40 hover:border-white text-white hover:bg-white hover:text-black transition-all flex items-center justify-center shadow-lg active:scale-95"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleNext}
+                  aria-label="Next track"
+                  className="w-12 h-12 rounded-full bg-black border border-white/40 hover:border-white text-white hover:bg-white hover:text-black transition-all flex items-center justify-center shadow-lg active:scale-95"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
           </div>
