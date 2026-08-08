@@ -15,46 +15,46 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
-    // Force DOM attributes for browser autoplay policy compliance
+    // Ensure DOM attributes for strict browser autoplay policy compliance
     videoEl.muted = true;
     videoEl.defaultMuted = true;
     videoEl.setAttribute('muted', '');
     videoEl.setAttribute('playsinline', '');
+    videoEl.setAttribute('autoplay', '');
 
-    const tryPlay = () => {
+    const playVideo = () => {
       if (videoEl && videoEl.paused) {
-        const promise = videoEl.play();
-        if (promise !== undefined) {
-          promise.catch((err) => {
-            console.warn("Hero video autoplay notice (browser policy):", err);
-          });
-        }
+        videoEl.play().catch((err) => {
+          console.warn("Hero video autoplay notice (browser policy):", err);
+        });
       }
     };
 
-    // Initial play attempt
-    tryPlay();
+    // If metadata or frames are already loaded, play immediately
+    if (videoEl.readyState >= 1) {
+      playVideo();
+    }
 
-    // Event handlers for media loading milestones
-    videoEl.addEventListener('loadedmetadata', tryPlay);
-    videoEl.addEventListener('loadeddata', tryPlay);
-    videoEl.addEventListener('canplay', tryPlay);
+    // Attach listeners for when video metadata / data becomes ready
+    videoEl.addEventListener('loadedmetadata', playVideo);
+    videoEl.addEventListener('loadeddata', playVideo);
+    videoEl.addEventListener('canplay', playVideo);
 
-    // Fallback: If autoplay was delayed by browser interaction requirement
-    const handleUserInteraction = () => {
-      tryPlay();
-      window.removeEventListener('click', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
+    // Fallback trigger on initial user interaction if browser policy deferred autoplay
+    const handleInteraction = () => {
+      playVideo();
     };
-    window.addEventListener('click', handleUserInteraction, { once: true });
-    window.addEventListener('touchstart', handleUserInteraction, { once: true });
+    window.addEventListener('click', handleInteraction, { capture: true, once: true });
+    window.addEventListener('touchstart', handleInteraction, { capture: true, once: true });
+    window.addEventListener('pointerdown', handleInteraction, { capture: true, once: true });
 
     return () => {
-      videoEl.removeEventListener('loadedmetadata', tryPlay);
-      videoEl.removeEventListener('loadeddata', tryPlay);
-      videoEl.removeEventListener('canplay', tryPlay);
-      window.removeEventListener('click', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
+      videoEl.removeEventListener('loadedmetadata', playVideo);
+      videoEl.removeEventListener('loadeddata', playVideo);
+      videoEl.removeEventListener('canplay', playVideo);
+      window.removeEventListener('click', handleInteraction, { capture: true });
+      window.removeEventListener('touchstart', handleInteraction, { capture: true });
+      window.removeEventListener('pointerdown', handleInteraction, { capture: true });
     };
   }, [config.heroVideoUrl]);
 
@@ -72,15 +72,8 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
             muted
             playsInline
             disablePictureInPicture
-            onCanPlay={() => {
-              if (videoRef.current && videoRef.current.paused) {
-                videoRef.current.play().catch((err) => {
-                  console.warn("onCanPlay hero video autoplay notice:", err);
-                });
-              }
-            }}
+            preload="auto"
             className="w-full h-full object-cover object-center opacity-90 transition-opacity duration-500 pointer-events-none"
-            poster={config.heroImage}
           />
         ) : (
           <img
