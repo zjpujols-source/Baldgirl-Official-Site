@@ -72,7 +72,7 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
             playsInline
             disablePictureInPicture
             preload="auto"
-            poster={config.heroImage}
+            poster="/hero-poster.jpg"
             className="w-full h-full object-cover object-center opacity-90 transition-opacity duration-500 pointer-events-none"
           >
             <source src={config.heroVideoUrl} type="video/mp4" />
