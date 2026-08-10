@@ -66,15 +66,17 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
           <video
             key={config.heroVideoUrl}
             ref={videoRef}
-            src={config.heroVideoUrl}
             autoPlay
             loop
             muted
             playsInline
             disablePictureInPicture
             preload="auto"
+            poster={config.heroImage}
             className="w-full h-full object-cover object-center opacity-90 transition-opacity duration-500 pointer-events-none"
-          />
+          >
+            <source src={config.heroVideoUrl} type="video/mp4" />
+          </video>
         ) : (
           <img
             src={config.heroImage}
